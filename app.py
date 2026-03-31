@@ -4,10 +4,10 @@ import uuid
 import threading
 import subprocess
 import json
-from flask import Flask, request, jsonify, send_file, Response
+from flask import Flask, request, jsonify, send_file, Response, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 CORS(app)
 
 DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "downloads")
@@ -89,6 +89,11 @@ def run_download(job_id, url, fmt, quality):
     except Exception as e:
         jobs[job_id]["status"] = "error"
         jobs[job_id]["error"] = str(e)
+
+
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
 
 
 @app.route("/api/info", methods=["POST"])
@@ -189,5 +194,6 @@ def download(job_id):
 
 
 if __name__ == "__main__":
-    print("🎵 YouTube Converter backend running at http://localhost:5000")
-    app.run(debug=False, port=5000, threaded=True)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"🎵 YouTube Converter running at http://localhost:{port}")
+    app.run(debug=False, host="0.0.0.0", port=port, threaded=True)
