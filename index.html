@@ -34,7 +34,6 @@
     overflow-x: hidden;
   }
 
-  /* Background grid */
   body::before {
     content: '';
     position: fixed;
@@ -47,7 +46,6 @@
     z-index: 0;
   }
 
-  /* Glow orbs */
   body::after {
     content: '';
     position: fixed;
@@ -66,6 +64,56 @@
     width: 100%;
     max-width: 700px;
   }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+    animation: fadeDown 0.4s ease both;
+  }
+
+  .nav-email {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .nav-pro-badge {
+    background: var(--accent);
+    color: #0a0a0f;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .nav-btn:hover { border-color: var(--accent); }
+
+  .nav-btn-accent {
+    background: var(--accent);
+    border: none;
+    color: #0a0a0f;
+  }
+
+  .nav-btn-accent:hover { opacity: 0.88; }
 
   /* Header */
   header {
@@ -130,13 +178,13 @@
     letter-spacing: 0.02em;
   }
 
-  /* Main card */
+  /* Cards */
   .card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 32px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     animation: fadeUp 0.5s ease 0.1s both;
   }
 
@@ -149,10 +197,7 @@
     margin-bottom: 10px;
   }
 
-  .url-row {
-    display: flex;
-    gap: 12px;
-  }
+  .url-row { display: flex; gap: 12px; }
 
   .url-input {
     flex: 1;
@@ -165,10 +210,10 @@
     font-size: 13px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
   }
 
   .url-input::placeholder { color: var(--muted); }
-
   .url-input:focus {
     border-color: rgba(232,255,71,0.4);
     box-shadow: 0 0 0 3px rgba(232,255,71,0.07);
@@ -192,7 +237,7 @@
   .fetch-btn:active { transform: scale(0.97); }
   .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Video info */
+  /* Video / Playlist info */
   .video-info {
     display: none;
     background: var(--surface);
@@ -208,8 +253,7 @@
   .video-info.show { display: flex; }
 
   .thumb {
-    width: 90px;
-    height: 55px;
+    width: 90px; height: 55px;
     object-fit: cover;
     border-radius: 7px;
     flex-shrink: 0;
@@ -233,15 +277,59 @@
     color: var(--muted);
   }
 
-  /* Format + Quality row */
+  /* Usage bar */
+  .usage-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .usage-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .usage-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .usage-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .usage-dot.used { background: var(--accent); }
+  .usage-dot.used.warn { background: #f59e0b; }
+  .usage-dot.used.full { background: var(--error); }
+
+  .upgrade-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+    background: none;
+    border: none;
+  }
+
+  /* Options */
   .options-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-top: 24px;
   }
-
-  .option-group {}
 
   .seg-control {
     display: flex;
@@ -266,12 +354,7 @@
     transition: all 0.2s;
   }
 
-  .seg-btn.active {
-    background: var(--card);
-    color: var(--text);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  }
-
+  .seg-btn.active { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
   .seg-btn.mp3.active { color: var(--accent); }
   .seg-btn.mp4.active { color: var(--accent2); }
 
@@ -313,11 +396,7 @@
     box-shadow: 0 4px 20px rgba(232,255,71,0.2);
   }
 
-  .convert-btn:hover {
-    opacity: 0.9;
-    box-shadow: 0 6px 28px rgba(232,255,71,0.32);
-  }
-
+  .convert-btn:hover { opacity: 0.9; box-shadow: 0 6px 28px rgba(232,255,71,0.32); }
   .convert-btn:active { transform: scale(0.985); }
   .convert-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
@@ -329,27 +408,14 @@
     border-radius: var(--radius);
     padding: 28px 32px;
     animation: fadeUp 0.4s ease both;
+    margin-bottom: 16px;
   }
 
   .progress-card.show { display: block; }
 
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .progress-status {
-    font-weight: 700;
-    font-size: 15px;
-  }
-
-  .progress-pct {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-  }
+  .progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .progress-status { font-weight: 700; font-size: 15px; }
+  .progress-pct { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
 
   .progress-track {
     background: var(--surface);
@@ -368,11 +434,7 @@
     box-shadow: 0 0 12px rgba(232,255,71,0.5);
   }
 
-  .steps {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+  .steps { display: flex; gap: 12px; flex-wrap: wrap; }
 
   .step {
     font-family: 'DM Mono', monospace;
@@ -384,17 +446,8 @@
     transition: all 0.3s;
   }
 
-  .step.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(232,255,71,0.07);
-  }
-
-  .step.done {
-    border-color: var(--success);
-    color: var(--success);
-    background: rgba(71,255,178,0.05);
-  }
+  .step.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.07); }
+  .step.done { border-color: var(--success); color: var(--success); background: rgba(71,255,178,0.05); }
 
   /* Download card */
   .download-card {
@@ -405,6 +458,7 @@
     padding: 28px 32px;
     text-align: center;
     animation: fadeUp 0.4s ease both;
+    margin-bottom: 16px;
   }
 
   .download-card.show { display: block; }
@@ -422,20 +476,8 @@
     animation: popIn 0.4s ease both;
   }
 
-  .download-title {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: var(--success);
-  }
-
-  .download-file {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 22px;
-    word-break: break-all;
-  }
+  .download-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; color: var(--success); }
+  .download-file { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 22px; word-break: break-all; }
 
   .download-btn {
     display: inline-flex;
@@ -486,6 +528,169 @@
 
   .error-msg.show { display: block; }
 
+  /* Auth modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px;
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .modal-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .modal-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+
+  .modal-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .modal-input:focus { border-color: rgba(232,255,71,0.4); }
+
+  .modal-error {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 12px;
+    min-height: 18px;
+  }
+
+  .modal-submit {
+    width: 100%;
+    margin-top: 20px;
+    background: linear-gradient(135deg, var(--accent) 0%, #b8ff00 100%);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .modal-submit:hover { opacity: 0.9; }
+  .modal-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .modal-switch {
+    display: block;
+    margin: 14px auto 0;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Upgrade toast */
+  .upgrade-toast {
+    display: none;
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--accent);
+    color: #0a0a0f;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    z-index: 300;
+    animation: fadeUp 0.4s ease both;
+    box-shadow: 0 8px 30px rgba(232,255,71,0.4);
+  }
+
+  /* Playlist pro gate */
+  .pro-gate {
+    display: none;
+    background: rgba(232,255,71,0.05);
+    border: 1px solid rgba(232,255,71,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .pro-gate.show { display: flex; }
+
+  .pro-gate-btn {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 7px;
+    padding: 7px 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
   /* Animations */
   @keyframes fadeDown {
     from { opacity: 0; transform: translateY(-18px); }
@@ -508,7 +713,7 @@
   }
 
   footer {
-    margin-top: 48px;
+    margin-top: 40px;
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     color: var(--muted);
@@ -522,6 +727,21 @@
 <body>
 
 <div class="container">
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div id="navLoggedOut">
+      <button class="nav-btn" onclick="openAuthModal('login')">Log in</button>
+      <button class="nav-btn nav-btn-accent" onclick="openAuthModal('register')">Sign up</button>
+    </div>
+    <div id="navLoggedIn" style="display:none;display:none;align-items:center;gap:10px;">
+      <span class="nav-email" id="navEmail"></span>
+      <span class="nav-pro-badge" id="navProBadge" style="display:none">PRO</span>
+      <button class="nav-btn" id="navUpgradeBtn" onclick="startUpgrade()" style="display:none">Upgrade to Pro</button>
+      <button class="nav-btn" onclick="doLogout()">Log out</button>
+    </div>
+  </nav>
+
   <header>
     <div class="logo-badge">
       <div class="logo-dot"></div>
@@ -539,7 +759,7 @@
         class="url-input"
         id="urlInput"
         type="text"
-        placeholder="https://www.youtube.com/watch?v=..."
+        placeholder="https://www.youtube.com/watch?v=... or playlist"
         autocomplete="off"
         spellcheck="false"
       />
@@ -553,6 +773,21 @@
         <div class="video-title" id="videoTitle">—</div>
         <div class="video-dur" id="videoDur">—</div>
       </div>
+    </div>
+
+    <!-- Playlist pro gate -->
+    <div class="pro-gate" id="proGate">
+      <span>Playlist download is a Pro feature</span>
+      <button class="pro-gate-btn" onclick="startUpgrade()">Upgrade to Pro</button>
+    </div>
+
+    <!-- Usage bar -->
+    <div class="usage-bar" id="usageBar" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="usage-dots" id="usageDots"></div>
+        <span class="usage-text" id="usageText"></span>
+      </div>
+      <button class="upgrade-link" id="upgradeLink" onclick="startUpgrade()" style="display:none">Upgrade to Pro →</button>
     </div>
 
     <!-- Options -->
@@ -601,25 +836,22 @@
     <div class="check-icon">✓</div>
     <div class="download-title">Ready to download!</div>
     <div class="download-file" id="downloadFilename"></div>
-    <a class="download-btn" id="downloadLink" href="#" target="_blank">
-      ⬇ Download File
-    </a>
+    <a class="download-btn" id="downloadLink" href="#" target="_blank">⬇ Download File</a>
     <button class="reset-btn" onclick="resetAll()">Convert another</button>
   </div>
 
   <footer>
-    Powered by yt-dlp · Runs locally on your machine<br/>
-    Supports videos of any duration including 4+ hour streams
+    Powered by yt-dlp &mdash; Free: 3 downloads/day &mdash; Pro: unlimited + playlists
   </footer>
 
   <!-- Cookies Panel -->
-  <div class="card" id="cookiesCard" style="margin-top:12px;padding:16px 20px;">
+  <div class="card" style="margin-top:12px;padding:16px 20px;">
     <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleCookiesPanel()">
       <div style="font-size:13px;color:var(--muted);">YouTube Cookies <span id="cookiesBadge" style="display:none;background:#22c55e;color:#000;font-size:10px;padding:2px 7px;border-radius:99px;margin-left:8px;font-weight:700;">ACTIVE</span></div>
       <div id="cookiesChevron" style="font-size:11px;color:var(--muted);">&#9660;</div>
     </div>
     <div id="cookiesBody" style="display:none;margin-top:12px;">
-      <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">Required for age-restricted videos. Export your cookies from Chrome/Firefox using the <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp" target="_blank" style="color:#a78bfa;">Get cookies.txt</a> extension, then upload here.</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">Required for age-restricted videos. Export from Chrome/Firefox using the <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp" target="_blank" style="color:#a78bfa;">Get cookies.txt</a> extension.</p>
       <div style="display:flex;gap:10px;align-items:center;">
         <input type="file" id="cookiesFile" accept=".txt" style="font-size:12px;color:var(--muted);flex:1;"/>
         <button onclick="uploadCookies()" style="padding:6px 14px;font-size:12px;background:#a78bfa;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Upload</button>
@@ -628,7 +860,27 @@
       <div id="cookiesMsg" style="font-size:12px;margin-top:8px;"></div>
     </div>
   </div>
+
 </div>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeAuthModal()">×</button>
+    <div class="modal-title" id="authModalTitle">Log in</div>
+    <div class="modal-sub" id="authModalSub">Welcome back</div>
+    <div class="field-label">Email</div>
+    <input class="modal-input" id="authEmail" type="email" placeholder="you@example.com"/>
+    <div class="field-label">Password</div>
+    <input class="modal-input" id="authPassword" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()"/>
+    <div class="modal-error" id="authError"></div>
+    <button class="modal-submit" id="authSubmitBtn" onclick="submitAuth()">Continue</button>
+    <button class="modal-switch" onclick="toggleAuthMode()" id="authSwitchBtn">Don't have an account? Sign up</button>
+  </div>
+</div>
+
+<!-- Upgrade toast -->
+<div class="upgrade-toast" id="upgradeToast">Pro activated! Unlimited downloads unlocked.</div>
 
 <script>
   const API = '/api';
@@ -636,7 +888,156 @@
   let currentJobId = null;
   let pollTimer = null;
   let videoReady = false;
+  let isPlaylist = false;
+  let currentUser = null;
+  let authMode = 'login';
 
+  // ── Init ──────────────────────────────────────────────────────────────────
+  async function init() {
+    const res = await fetch(`${API}/auth/me`, { credentials: 'include' });
+    const data = await res.json();
+    currentUser = data.user;
+    updateNav();
+    updateUsageBar(data.downloads_today, data.limit);
+
+    // Stripe success redirect
+    if (new URLSearchParams(location.search).get('upgraded') === '1') {
+      history.replaceState({}, '', '/');
+      showUpgradeToast();
+      // Refresh user info
+      const r2 = await fetch(`${API}/auth/me`, { credentials: 'include' });
+      const d2 = await r2.json();
+      currentUser = d2.user;
+      updateNav();
+      updateUsageBar(d2.downloads_today, d2.limit);
+    }
+
+    fetch(`${API}/cookies/status`).then(r => r.json()).then(d => {
+      if (d.active) document.getElementById('cookiesBadge').style.display = '';
+    });
+  }
+
+  function updateNav() {
+    const loggedOut = document.getElementById('navLoggedOut');
+    const loggedIn = document.getElementById('navLoggedIn');
+    if (currentUser) {
+      loggedOut.style.display = 'none';
+      loggedIn.style.display = 'flex';
+      document.getElementById('navEmail').textContent = currentUser.email;
+      document.getElementById('navProBadge').style.display = currentUser.is_pro ? '' : 'none';
+      document.getElementById('navUpgradeBtn').style.display = currentUser.is_pro ? 'none' : '';
+    } else {
+      loggedOut.style.display = 'flex';
+      loggedIn.style.display = 'none';
+    }
+  }
+
+  function updateUsageBar(count, limit) {
+    const bar = document.getElementById('usageBar');
+    if (!limit) { bar.style.display = 'none'; return; } // pro = no bar
+    bar.style.display = 'flex';
+
+    const dots = document.getElementById('usageDots');
+    dots.innerHTML = '';
+    for (let i = 0; i < limit; i++) {
+      const d = document.createElement('div');
+      d.className = 'usage-dot' + (i < count ? ' used' + (count >= limit ? ' full' : count === limit - 1 ? ' warn' : '') : '');
+      dots.appendChild(d);
+    }
+
+    document.getElementById('usageText').textContent = `${count} / ${limit} downloads today`;
+    document.getElementById('upgradeLink').style.display = count >= limit - 1 ? '' : 'none';
+  }
+
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  function openAuthModal(mode) {
+    authMode = mode;
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+    document.getElementById('authError').textContent = '';
+    document.getElementById('authModalTitle').textContent = mode === 'login' ? 'Log in' : 'Create account';
+    document.getElementById('authModalSub').textContent = mode === 'login' ? 'Welcome back' : 'Free: 3 downloads/day · Pro: unlimited';
+    document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Log in' : 'Sign up';
+    document.getElementById('authSwitchBtn').textContent = mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Log in';
+    document.getElementById('authModal').classList.add('show');
+    setTimeout(() => document.getElementById('authEmail').focus(), 100);
+  }
+
+  function closeAuthModal() {
+    document.getElementById('authModal').classList.remove('show');
+  }
+
+  function toggleAuthMode() {
+    openAuthModal(authMode === 'login' ? 'register' : 'login');
+  }
+
+  async function submitAuth() {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const btn = document.getElementById('authSubmitBtn');
+    const errEl = document.getElementById('authError');
+    errEl.textContent = '';
+    if (!email || !password) { errEl.textContent = 'Email and password required.'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Please wait…';
+
+    const endpoint = authMode === 'login' ? 'login' : 'register';
+    const res = await fetch(`${API}/auth/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = authMode === 'login' ? 'Log in' : 'Sign up';
+
+    if (data.error) { errEl.textContent = data.error; return; }
+
+    currentUser = data;
+    updateNav();
+    closeAuthModal();
+
+    const r2 = await fetch(`${API}/auth/me`, { credentials: 'include' });
+    const d2 = await r2.json();
+    updateUsageBar(d2.downloads_today, d2.limit);
+  }
+
+  async function doLogout() {
+    await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' });
+    currentUser = null;
+    updateNav();
+    const r = await fetch(`${API}/auth/me`, { credentials: 'include' });
+    const d = await r.json();
+    updateUsageBar(d.downloads_today, d.limit);
+  }
+
+  // ── Stripe ────────────────────────────────────────────────────────────────
+  async function startUpgrade() {
+    if (!currentUser) { openAuthModal('register'); return; }
+    const btn = event && event.target;
+    if (btn) btn.textContent = 'Loading…';
+    const res = await fetch(`${API}/stripe/create-checkout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    } else {
+      alert(data.error || 'Could not start checkout. Please try again.');
+      if (btn) btn.textContent = 'Upgrade to Pro';
+    }
+  }
+
+  function showUpgradeToast() {
+    const t = document.getElementById('upgradeToast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 5000);
+  }
+
+  // ── Format / Quality ──────────────────────────────────────────────────────
   function setFormat(fmt) {
     selectedFormat = fmt;
     document.getElementById('btnMp3').classList.toggle('active', fmt === 'mp3');
@@ -645,6 +1046,7 @@
     qSel.disabled = !videoReady || fmt === 'mp3';
   }
 
+  // ── Errors ────────────────────────────────────────────────────────────────
   function showError(msg) {
     const el = document.getElementById('errorMsg');
     el.textContent = msg;
@@ -655,11 +1057,14 @@
     document.getElementById('errorMsg').classList.remove('show');
   }
 
+  // ── Fetch info ────────────────────────────────────────────────────────────
   async function fetchInfo() {
     const url = document.getElementById('urlInput').value.trim();
     if (!url) { showError('Please enter a YouTube URL.'); return; }
     clearError();
     videoReady = false;
+    isPlaylist = false;
+    document.getElementById('proGate').classList.remove('show');
 
     const fetchBtn = document.getElementById('fetchBtn');
     fetchBtn.disabled = true;
@@ -671,66 +1076,92 @@
       const res = await fetch(`${API}/info`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ url })
       });
       const data = await res.json();
-
       if (data.error) { showError(data.error); return; }
 
-      document.getElementById('videoTitle').textContent = data.title;
-      document.getElementById('videoDur').textContent = `Duration: ${data.duration}`;
-      if (data.thumbnail) {
-        document.getElementById('thumbnail').src = data.thumbnail;
+      if (data.type === 'playlist') {
+        isPlaylist = true;
+        document.getElementById('videoTitle').textContent = data.title;
+        document.getElementById('videoDur').textContent = `${data.video_count} videos`;
+        if (data.thumbnail) document.getElementById('thumbnail').src = data.thumbnail;
+        document.getElementById('videoInfo').classList.add('show');
+
+        const isPro = currentUser && currentUser.is_pro;
+        if (!isPro) {
+          document.getElementById('proGate').classList.add('show');
+          document.getElementById('convertBtn').disabled = true;
+        } else {
+          videoReady = true;
+          document.getElementById('convertBtn').disabled = false;
+          document.getElementById('convertBtn').textContent = 'Download Playlist';
+        }
+        document.getElementById('qualitySelect').disabled = selectedFormat === 'mp3';
+      } else {
+        document.getElementById('videoTitle').textContent = data.title;
+        document.getElementById('videoDur').textContent = `Duration: ${data.duration}`;
+        if (data.thumbnail) document.getElementById('thumbnail').src = data.thumbnail;
+        document.getElementById('videoInfo').classList.add('show');
+
+        const qSel = document.getElementById('qualitySelect');
+        qSel.innerHTML = '';
+        const qualities = selectedFormat === 'mp3' ? ['Best quality'] :
+          (data.qualities && data.qualities.length ? data.qualities : ['1080p','720p','480p','360p']);
+        qualities.forEach(q => {
+          const opt = document.createElement('option');
+          opt.value = q; opt.textContent = q;
+          qSel.appendChild(opt);
+        });
+        qSel.disabled = selectedFormat === 'mp3';
+        videoReady = true;
+        document.getElementById('convertBtn').textContent = 'Convert & Download';
+        document.getElementById('convertBtn').disabled = false;
       }
-      document.getElementById('videoInfo').classList.add('show');
-
-      // Populate quality
-      const qSel = document.getElementById('qualitySelect');
-      qSel.innerHTML = '';
-      const qualities = selectedFormat === 'mp3'
-        ? ['Best quality']
-        : (data.qualities.length ? data.qualities : ['1080p','720p','480p','360p']);
-
-      qualities.forEach(q => {
-        const opt = document.createElement('option');
-        opt.value = q;
-        opt.textContent = q;
-        qSel.appendChild(opt);
-      });
-
-      qSel.disabled = selectedFormat === 'mp3';
-      videoReady = true;
-      document.getElementById('convertBtn').disabled = false;
 
     } catch (e) {
-      showError('Cannot connect to backend. Make sure app.py is running on port 5000.');
+      showError('Cannot connect to backend.');
     } finally {
       fetchBtn.disabled = false;
       fetchBtn.textContent = 'Fetch';
     }
   }
 
+  // ── Convert ───────────────────────────────────────────────────────────────
   async function startConvert() {
     const url = document.getElementById('urlInput').value.trim();
     if (!url || !videoReady) return;
     clearError();
 
     const quality = document.getElementById('qualitySelect').value;
-
-    // Hide input card, show progress
     document.getElementById('inputCard').style.display = 'none';
     document.getElementById('progressCard').classList.add('show');
     document.getElementById('downloadCard').classList.remove('show');
 
+    const endpoint = isPlaylist ? `${API}/convert/playlist` : `${API}/convert`;
+
     try {
-      const res = await fetch(`${API}/convert`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ url, format: selectedFormat, quality })
       });
       const data = await res.json();
-      if (data.error) { handleConvertError(data.error); return; }
 
+      if (data.upgrade_required) {
+        document.getElementById('progressCard').classList.remove('show');
+        document.getElementById('inputCard').style.display = '';
+        showError(data.error);
+        // Refresh usage bar
+        const r = await fetch(`${API}/auth/me`, { credentials: 'include' });
+        const d = await r.json();
+        updateUsageBar(d.downloads_today, d.limit);
+        return;
+      }
+
+      if (data.error) { handleConvertError(data.error); return; }
       currentJobId = data.job_id;
       pollStatus();
     } catch (e) {
@@ -741,13 +1172,10 @@
   function pollStatus() {
     pollTimer = setInterval(async () => {
       try {
-        const res = await fetch(`${API}/status/${currentJobId}`);
+        const res = await fetch(`${API}/status/${currentJobId}`, { credentials: 'include' });
         const job = await res.json();
         updateProgress(job);
-
-        if (job.status === 'done' || job.status === 'error') {
-          clearInterval(pollTimer);
-        }
+        if (job.status === 'done' || job.status === 'error') clearInterval(pollTimer);
       } catch {}
     }, 900);
   }
@@ -768,35 +1196,22 @@
     const activeSteps = steps[job.status] || [];
     ['stepFetch','stepDownload','stepProcess','stepDone'].forEach(id => {
       const el = document.getElementById(id);
-      const idx = activeSteps.indexOf(id);
       if (job.status === 'done') {
         el.classList.add('done'); el.classList.remove('active');
       } else if (id === activeSteps[activeSteps.length - 1]) {
         el.classList.add('active'); el.classList.remove('done');
-      } else if (idx >= 0) {
+      } else if (activeSteps.includes(id)) {
         el.classList.add('done'); el.classList.remove('active');
       } else {
         el.classList.remove('active','done');
       }
     });
 
-    const statusLabels = {
-      queued: 'Queued…',
-      fetching: 'Fetching video info…',
-      downloading: 'Downloading…',
-      processing: 'Processing & converting…',
-      done: 'Complete!',
-      error: 'Error'
-    };
-    document.getElementById('progressStatus').textContent = statusLabels[job.status] || job.status;
+    const labels = { queued:'Queued…', fetching:'Fetching info…', downloading:'Downloading…', processing:'Processing…', done:'Complete!', error:'Error' };
+    document.getElementById('progressStatus').textContent = labels[job.status] || job.status;
 
-    if (job.status === 'done') {
-      setTimeout(() => showDownload(job), 400);
-    }
-
-    if (job.status === 'error') {
-      handleConvertError(job.error || 'An error occurred.');
-    }
+    if (job.status === 'done') setTimeout(() => showDownload(job), 400);
+    if (job.status === 'error') handleConvertError(job.error || 'An error occurred.');
   }
 
   function showDownload(job) {
@@ -804,6 +1219,11 @@
     document.getElementById('downloadCard').classList.add('show');
     document.getElementById('downloadFilename').textContent = job.filename || 'your file';
     document.getElementById('downloadLink').href = `${API}/download/${currentJobId}`;
+
+    // Update usage bar after download
+    fetch(`${API}/auth/me`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => updateUsageBar(d.downloads_today, d.limit));
   }
 
   function handleConvertError(msg) {
@@ -816,16 +1236,18 @@
     clearInterval(pollTimer);
     currentJobId = null;
     videoReady = false;
+    isPlaylist = false;
     document.getElementById('urlInput').value = '';
     document.getElementById('videoInfo').classList.remove('show');
+    document.getElementById('proGate').classList.remove('show');
     document.getElementById('convertBtn').disabled = true;
+    document.getElementById('convertBtn').textContent = 'Convert & Download';
     document.getElementById('qualitySelect').innerHTML = '<option>Fetch URL first</option>';
     document.getElementById('qualitySelect').disabled = true;
     document.getElementById('inputCard').style.display = '';
     document.getElementById('progressCard').classList.remove('show');
     document.getElementById('downloadCard').classList.remove('show');
     clearError();
-    // Reset progress
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('progressPct').textContent = '0%';
     ['stepFetch','stepDownload','stepProcess','stepDone'].forEach(id => {
@@ -833,12 +1255,11 @@
     });
   }
 
-  // Allow pressing Enter in URL input
   document.getElementById('urlInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') fetchInfo();
   });
 
-  // Cookies panel
+  // ── Cookies panel ─────────────────────────────────────────────────────────
   function toggleCookiesPanel() {
     const body = document.getElementById('cookiesBody');
     const chevron = document.getElementById('cookiesChevron');
@@ -854,27 +1275,26 @@
     form.append('file', file);
     const res = await fetch(`${API}/cookies`, { method: 'POST', body: form });
     const data = await res.json();
+    const msg = document.getElementById('cookiesMsg');
     if (data.ok) {
-      document.getElementById('cookiesMsg').style.color = '#22c55e';
-      document.getElementById('cookiesMsg').textContent = 'Cookies uploaded successfully.';
+      msg.style.color = '#22c55e';
+      msg.textContent = 'Cookies uploaded successfully.';
       document.getElementById('cookiesBadge').style.display = '';
     } else {
-      document.getElementById('cookiesMsg').style.color = '#f87171';
-      document.getElementById('cookiesMsg').textContent = data.error || 'Upload failed.';
+      msg.style.color = '#f87171';
+      msg.textContent = data.error || 'Upload failed.';
     }
   }
 
   async function deleteCookies() {
     await fetch(`${API}/cookies`, { method: 'DELETE' });
-    document.getElementById('cookiesMsg').style.color = 'var(--muted)';
-    document.getElementById('cookiesMsg').textContent = 'Cookies removed.';
+    const msg = document.getElementById('cookiesMsg');
+    msg.style.color = 'var(--muted)';
+    msg.textContent = 'Cookies removed.';
     document.getElementById('cookiesBadge').style.display = 'none';
   }
 
-  // Check cookie status on load
-  fetch(`${API}/cookies/status`).then(r => r.json()).then(d => {
-    if (d.active) document.getElementById('cookiesBadge').style.display = '';
-  });
+  init();
 </script>
 </body>
 </html>

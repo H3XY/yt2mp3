@@ -1,3 +1,9 @@
 flask
 flask-cors
+flask-sqlalchemy
+flask-login
 yt-dlp
+bcrypt
+stripe
+psycopg2-binary
+gunicorn
