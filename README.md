@@ -68,8 +68,8 @@ Everything runs on your own machine. No data is sent to third-party servers.
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/yt-converter.git
-cd yt-converter
+git clone https://github.com/H3XY/yt2mp3.git
+cd yt2mp3
 ```
 
 **2. Install Python dependencies**
