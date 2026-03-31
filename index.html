@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YTDL — YouTube Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #222230;
+    --accent: #e8ff47;
+    --accent2: #ff4785;
+    --text: #f0f0f8;
+    --muted: #6b6b88;
+    --success: #47ffb2;
+    --error: #ff4747;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 700px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,255,71,0.08);
+    border: 1px solid rgba(232,255,71,0.2);
+    border-radius: 100px;
+    padding: 6px 16px 6px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .logo-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  h1 {
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  h1 span {
+    color: var(--accent);
+    display: inline-block;
+    position: relative;
+  }
+
+  h1 span::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* Main card */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .url-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .url-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .url-input::placeholder { color: var(--muted); }
+
+  .url-input:focus {
+    border-color: rgba(232,255,71,0.4);
+    box-shadow: 0 0 0 3px rgba(232,255,71,0.07);
+  }
+
+  .fetch-btn {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 22px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .fetch-btn:hover { opacity: 0.88; }
+  .fetch-btn:active { transform: scale(0.97); }
+  .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Video info */
+  .video-info {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+    gap: 14px;
+    align-items: center;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .video-info.show { display: flex; }
+
+  .thumb {
+    width: 90px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 7px;
+    flex-shrink: 0;
+    background: var(--border);
+  }
+
+  .video-meta { flex: 1; min-width: 0; }
+
+  .video-title {
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+  }
+
+  .video-dur {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Format + Quality row */
+  .options-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .option-group {}
+
+  .seg-control {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .seg-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    padding: 10px;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .seg-btn.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  .seg-btn.mp3.active { color: var(--accent); }
+  .seg-btn.mp4.active { color: var(--accent2); }
+
+  select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b88' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  select:disabled { opacity: 0.4; }
+
+  /* Convert button */
+  .convert-btn {
+    width: 100%;
+    margin-top: 24px;
+    background: linear-gradient(135deg, var(--accent) 0%, #b8ff00 100%);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 12px;
+    padding: 17px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(232,255,71,0.2);
+  }
+
+  .convert-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 28px rgba(232,255,71,0.32);
+  }
+
+  .convert-btn:active { transform: scale(0.985); }
+  .convert-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+  /* Progress card */
+  .progress-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .progress-card.show { display: block; }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .progress-status {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .progress-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .progress-track {
+    background: var(--surface);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--accent), #b8ff00);
+    transition: width 0.4s ease;
+    width: 0%;
+    box-shadow: 0 0 12px rgba(232,255,71,0.5);
+  }
+
+  .steps {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .step {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.3s;
+  }
+
+  .step.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(232,255,71,0.07);
+  }
+
+  .step.done {
+    border-color: var(--success);
+    color: var(--success);
+    background: rgba(71,255,178,0.05);
+  }
+
+  /* Download card */
+  .download-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid rgba(71,255,178,0.3);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    text-align: center;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .download-card.show { display: block; }
+
+  .check-icon {
+    width: 52px; height: 52px;
+    background: rgba(71,255,178,0.1);
+    border: 2px solid var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 22px;
+    animation: popIn 0.4s ease both;
+  }
+
+  .download-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--success);
+  }
+
+  .download-file {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 22px;
+    word-break: break-all;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--success);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 28px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-decoration: none;
+  }
+
+  .download-btn:hover { opacity: 0.85; }
+
+  .reset-btn {
+    display: block;
+    margin: 14px auto 0;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .reset-btn:hover { color: var(--text); }
+
+  /* Error */
+  .error-msg {
+    display: none;
+    background: rgba(255,71,71,0.08);
+    border: 1px solid rgba(255,71,71,0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--error);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .error-msg.show { display: block; }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%  { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  footer {
+    margin-top: 48px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.8;
+    animation: fadeUp 0.5s ease 0.3s both;
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="logo-badge">
+      <div class="logo-dot"></div>
+      Audio &amp; Video Downloader
+    </div>
+    <h1>YouTube <span>Convert</span></h1>
+    <p class="subtitle">MP3 &amp; MP4 · Any length · Any quality</p>
+  </header>
+
+  <!-- URL Input Card -->
+  <div class="card" id="inputCard">
+    <div class="label">Paste YouTube URL</div>
+    <div class="url-row">
+      <input
+        class="url-input"
+        id="urlInput"
+        type="text"
+        placeholder="https://www.youtube.com/watch?v=..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="fetch-btn" id="fetchBtn" onclick="fetchInfo()">Fetch</button>
+    </div>
+
+    <!-- Video info preview -->
+    <div class="video-info" id="videoInfo">
+      <img class="thumb" id="thumbnail" src="" alt="thumbnail"/>
+      <div class="video-meta">
+        <div class="video-title" id="videoTitle">—</div>
+        <div class="video-dur" id="videoDur">—</div>
+      </div>
+    </div>
+
+    <!-- Options -->
+    <div class="options-row">
+      <div class="option-group">
+        <div class="label">Format</div>
+        <div class="seg-control">
+          <button class="seg-btn mp3 active" id="btnMp3" onclick="setFormat('mp3')">MP3</button>
+          <button class="seg-btn mp4" id="btnMp4" onclick="setFormat('mp4')">MP4</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <div class="label">Quality</div>
+        <select id="qualitySelect" disabled>
+          <option>Fetch URL first</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button class="convert-btn" id="convertBtn" onclick="startConvert()" disabled>
+      Convert &amp; Download
+    </button>
+  </div>
+
+  <!-- Progress Card -->
+  <div class="progress-card" id="progressCard">
+    <div class="progress-label">
+      <div class="progress-status" id="progressStatus">Starting…</div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="steps">
+      <div class="step" id="stepFetch">① Fetching</div>
+      <div class="step" id="stepDownload">② Downloading</div>
+      <div class="step" id="stepProcess">③ Processing</div>
+      <div class="step" id="stepDone">④ Done</div>
+    </div>
+  </div>
+
+  <!-- Download Card -->
+  <div class="download-card" id="downloadCard">
+    <div class="check-icon">✓</div>
+    <div class="download-title">Ready to download!</div>
+    <div class="download-file" id="downloadFilename"></div>
+    <a class="download-btn" id="downloadLink" href="#" target="_blank">
+      ⬇ Download File
+    </a>
+    <button class="reset-btn" onclick="resetAll()">Convert another</button>
+  </div>
+
+  <footer>
+    Powered by yt-dlp · Runs locally on your machine<br/>
+    Supports videos of any duration including 4+ hour streams
+  </footer>
+</div>
+
+<script>
+  const API = 'http://localhost:5000/api';
+  let selectedFormat = 'mp3';
+  let currentJobId = null;
+  let pollTimer = null;
+  let videoReady = false;
+
+  function setFormat(fmt) {
+    selectedFormat = fmt;
+    document.getElementById('btnMp3').classList.toggle('active', fmt === 'mp3');
+    document.getElementById('btnMp4').classList.toggle('active', fmt === 'mp4');
+    const qSel = document.getElementById('qualitySelect');
+    qSel.disabled = !videoReady || fmt === 'mp3';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  function clearError() {
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  async function fetchInfo() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url) { showError('Please enter a YouTube URL.'); return; }
+    clearError();
+    videoReady = false;
+
+    const fetchBtn = document.getElementById('fetchBtn');
+    fetchBtn.disabled = true;
+    fetchBtn.textContent = 'Loading…';
+    document.getElementById('convertBtn').disabled = true;
+    document.getElementById('videoInfo').classList.remove('show');
+
+    try {
+      const res = await fetch(`${API}/info`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+
+      if (data.error) { showError(data.error); return; }
+
+      document.getElementById('videoTitle').textContent = data.title;
+      document.getElementById('videoDur').textContent = `Duration: ${data.duration}`;
+      if (data.thumbnail) {
+        document.getElementById('thumbnail').src = data.thumbnail;
+      }
+      document.getElementById('videoInfo').classList.add('show');
+
+      // Populate quality
+      const qSel = document.getElementById('qualitySelect');
+      qSel.innerHTML = '';
+      const qualities = selectedFormat === 'mp3'
+        ? ['Best quality']
+        : (data.qualities.length ? data.qualities : ['1080p','720p','480p','360p']);
+
+      qualities.forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q;
+        opt.textContent = q;
+        qSel.appendChild(opt);
+      });
+
+      qSel.disabled = selectedFormat === 'mp3';
+      videoReady = true;
+      document.getElementById('convertBtn').disabled = false;
+
+    } catch (e) {
+      showError('Cannot connect to backend. Make sure app.py is running on port 5000.');
+    } finally {
+      fetchBtn.disabled = false;
+      fetchBtn.textContent = 'Fetch';
+    }
+  }
+
+  async function startConvert() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url || !videoReady) return;
+    clearError();
+
+    const quality = document.getElementById('qualitySelect').value;
+
+    // Hide input card, show progress
+    document.getElementById('inputCard').style.display = 'none';
+    document.getElementById('progressCard').classList.add('show');
+    document.getElementById('downloadCard').classList.remove('show');
+
+    try {
+      const res = await fetch(`${API}/convert`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, format: selectedFormat, quality })
+      });
+      const data = await res.json();
+      if (data.error) { handleConvertError(data.error); return; }
+
+      currentJobId = data.job_id;
+      pollStatus();
+    } catch (e) {
+      handleConvertError('Cannot connect to backend.');
+    }
+  }
+
+  function pollStatus() {
+    pollTimer = setInterval(async () => {
+      try {
+        const res = await fetch(`${API}/status/${currentJobId}`);
+        const job = await res.json();
+        updateProgress(job);
+
+        if (job.status === 'done' || job.status === 'error') {
+          clearInterval(pollTimer);
+        }
+      } catch {}
+    }, 900);
+  }
+
+  function updateProgress(job) {
+    const pct = job.progress || 0;
+    document.getElementById('progressFill').style.width = `${pct}%`;
+    document.getElementById('progressPct').textContent = `${pct}%`;
+
+    const steps = {
+      queued: ['stepFetch'],
+      fetching: ['stepFetch'],
+      downloading: ['stepFetch', 'stepDownload'],
+      processing: ['stepFetch', 'stepDownload', 'stepProcess'],
+      done: ['stepFetch', 'stepDownload', 'stepProcess', 'stepDone'],
+    };
+
+    const activeSteps = steps[job.status] || [];
+    ['stepFetch','stepDownload','stepProcess','stepDone'].forEach(id => {
+      const el = document.getElementById(id);
+      const idx = activeSteps.indexOf(id);
+      if (job.status === 'done') {
+        el.classList.add('done'); el.classList.remove('active');
+      } else if (id === activeSteps[activeSteps.length - 1]) {
+        el.classList.add('active'); el.classList.remove('done');
+      } else if (idx >= 0) {
+        el.classList.add('done'); el.classList.remove('active');
+      } else {
+        el.classList.remove('active','done');
+      }
+    });
+
+    const statusLabels = {
+      queued: 'Queued…',
+      fetching: 'Fetching video info…',
+      downloading: 'Downloading…',
+      processing: 'Processing & converting…',
+      done: 'Complete!',
+      error: 'Error'
+    };
+    document.getElementById('progressStatus').textContent = statusLabels[job.status] || job.status;
+
+    if (job.status === 'done') {
+      setTimeout(() => showDownload(job), 400);
+    }
+
+    if (job.status === 'error') {
+      handleConvertError(job.error || 'An error occurred.');
+    }
+  }
+
+  function showDownload(job) {
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('downloadCard').classList.add('show');
+    document.getElementById('downloadFilename').textContent = job.filename || 'your file';
+    document.getElementById('downloadLink').href = `${API}/download/${currentJobId}`;
+  }
+
+  function handleConvertError(msg) {
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('inputCard').style.display = '';
+    showError(msg);
+  }
+
+  function resetAll() {
+    clearInterval(pollTimer);
+    currentJobId = null;
+    videoReady = false;
+    document.getElementById('urlInput').value = '';
+    document.getElementById('videoInfo').classList.remove('show');
+    document.getElementById('convertBtn').disabled = true;
+    document.getElementById('qualitySelect').innerHTML = '<option>Fetch URL first</option>';
+    document.getElementById('qualitySelect').disabled = true;
+    document.getElementById('inputCard').style.display = '';
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('downloadCard').classList.remove('show');
+    clearError();
+    // Reset progress
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressPct').textContent = '0%';
+    ['stepFetch','stepDownload','stepProcess','stepDone'].forEach(id => {
+      document.getElementById(id).classList.remove('active','done');
+    });
+  }
+
+  // Allow pressing Enter in URL input
+  document.getElementById('urlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') fetchInfo();
+  });
+</script>
+</body>
+</html>
