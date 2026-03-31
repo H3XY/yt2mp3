@@ -13,8 +13,22 @@ CORS(app)
 DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "downloads")
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
+COOKIES_PATH = os.path.join(os.path.dirname(__file__), "cookies.txt")
+
+# Write cookies from env var at startup (for Railway/cloud deployments)
+_env_cookies = os.environ.get("YOUTUBE_COOKIES", "")
+if _env_cookies and not os.path.exists(COOKIES_PATH):
+    with open(COOKIES_PATH, "w") as f:
+        f.write(_env_cookies)
+
 # Track jobs: { job_id: { status, progress, filename, error, file_path } }
 jobs = {}
+
+
+def cookies_args():
+    if os.path.exists(COOKIES_PATH):
+        return ["--cookies", COOKIES_PATH]
+    return []
 
 def sanitize_filename(name):
     return re.sub(r'[^\w\-_. ]', '_', name)[:80]
@@ -29,6 +43,7 @@ def run_download(job_id, url, fmt, quality):
                 "yt-dlp",
                 "--no-playlist",
                 "--extractor-args", "youtube:player_client=android,web",
+                *cookies_args(),
                 "-x", "--audio-format", "mp3",
                 "--audio-quality", "0",
                 "-o", out_template,
@@ -43,6 +58,7 @@ def run_download(job_id, url, fmt, quality):
                 "yt-dlp",
                 "--no-playlist",
                 "--extractor-args", "youtube:player_client=android,web",
+                *cookies_args(),
                 "-f", format_sel,
                 "--merge-output-format", "mp4",
                 "-o", out_template,
@@ -110,6 +126,7 @@ def get_info():
         result = subprocess.run(
             ["yt-dlp", "--dump-json", "--no-playlist",
              "--extractor-args", "youtube:player_client=android,web",
+             *cookies_args(),
              url],
             capture_output=True, text=True, timeout=30
         )
@@ -195,6 +212,27 @@ def download(job_id):
         as_attachment=True,
         download_name=job["filename"]
     )
+
+
+@app.route("/api/cookies", methods=["POST"])
+def upload_cookies():
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    f = request.files["file"]
+    f.save(COOKIES_PATH)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/cookies", methods=["DELETE"])
+def delete_cookies():
+    if os.path.exists(COOKIES_PATH):
+        os.remove(COOKIES_PATH)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/cookies/status", methods=["GET"])
+def cookies_status():
+    return jsonify({"active": os.path.exists(COOKIES_PATH)})
 
 
 if __name__ == "__main__":
