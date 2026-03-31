@@ -28,6 +28,7 @@ def run_download(job_id, url, fmt, quality):
             cmd = [
                 "yt-dlp",
                 "--no-playlist",
+                "--extractor-args", "youtube:player_client=android,web",
                 "-x", "--audio-format", "mp3",
                 "--audio-quality", "0",
                 "-o", out_template,
@@ -41,6 +42,7 @@ def run_download(job_id, url, fmt, quality):
             cmd = [
                 "yt-dlp",
                 "--no-playlist",
+                "--extractor-args", "youtube:player_client=android,web",
                 "-f", format_sel,
                 "--merge-output-format", "mp4",
                 "-o", out_template,
@@ -106,11 +108,13 @@ def get_info():
 
     try:
         result = subprocess.run(
-            ["yt-dlp", "--dump-json", "--no-playlist", url],
+            ["yt-dlp", "--dump-json", "--no-playlist",
+             "--extractor-args", "youtube:player_client=android,web",
+             url],
             capture_output=True, text=True, timeout=30
         )
         if result.returncode != 0:
-            return jsonify({"error": "Could not fetch video info. Check the URL."}), 400
+            return jsonify({"error": result.stderr.strip() or "Could not fetch video info. Check the URL."}), 400
 
         info = json.loads(result.stdout)
         title = info.get("title", "Unknown")
