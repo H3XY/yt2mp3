@@ -45,8 +45,13 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 COOKIES_PATH = os.path.join(os.path.dirname(__file__), "cookies.txt")
 _env_cookies = os.environ.get("YOUTUBE_COOKIES", "")
 if _env_cookies and not os.path.exists(COOKIES_PATH):
+    import base64
+    try:
+        decoded = base64.b64decode(_env_cookies).decode("utf-8")
+    except Exception:
+        decoded = _env_cookies  # fallback: treat as plain text
     with open(COOKIES_PATH, "w") as f:
-        f.write(_env_cookies)
+        f.write(decoded)
 
 FREE_DAILY_LIMIT = 3
 jobs = {}
